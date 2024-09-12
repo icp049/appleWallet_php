@@ -15,6 +15,8 @@ if (isset($_POST['name'])) {
 
 
 
+
+
     // Generate Codabar barcode for account number
     $barcodeGenerator = new BarcodeGeneratorPNG();
     $barcode = $barcodeGenerator->getBarcode($accountNumber, $barcodeGenerator::TYPE_CODABAR);
@@ -39,10 +41,10 @@ $scaledWidth = $originalWidth * $scaleFactor;
 $scaledHeight = $originalHeight * $scaleFactor;
 
 // Add extra padding to the scaled dimensions
-$padding = 20; // Padding size in pixels
+$padding = 18; // Padding size in pixels
 
 // Set margins
-$margin = 10; // Margin size in pixels
+$margin = 7; // Margin size in pixels
 
 // Create a new blank image with margins and padding for the final result
 $width = $scaledWidth + (2 * $margin) + (2 * $padding);
@@ -79,12 +81,13 @@ foreach ($filesToCopy as $file) {
         $serialNumber = rand(100000, 999999) . '-' . rand(100, 999) . '-' . rand(100, 999); // Unique serialNumber
         $passJson = [
             "formatVersion" => 1,
-            "passTypeIdentifier" => "pass.applewallet2",
+            "passTypeIdentifier" => "pass.",
             "serialNumber" => $serialNumber,
-            "teamIdentifier" => "CLGF4TH7AG",
-            "organizationName" => "Your Organization",
-            "description" => "Sample pass",
-            "backgroundColor" => "rgb(240,240,240)",
+            "teamIdentifier" => "",
+            "organizationName" => "Regina Public Library",
+            "description" => "RPL Library Card",
+            "backgroundColor" => "rgb(255, 255, 255)",
+            "foregroundColor" => "rgb(110, 58, 207)",
             "storeCard" => [
                 
                 "secondaryFields" => [
@@ -118,10 +121,10 @@ foreach ($filesToCopy as $file) {
             $pass->addFile("{$passFolder}/logo.png");
             $pass->addFile("{$passFolder}/strip.png");
 
-            // Output the PKPass
+          //create pkpass
             $pass->create(true);
 
-            // Cleanup - Delete the barcode and folder after usage
+          //delete
             array_map('unlink', glob("{$passFolder}/*.*"));
             rmdir($passFolder);
         } catch (Exception $e) {
@@ -130,7 +133,7 @@ foreach ($filesToCopy as $file) {
         }
     }
 } else {
-    // Display the form
+   
 ?>
 <html>
 <head>
