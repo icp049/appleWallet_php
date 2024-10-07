@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pass Creator</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@latest/dist/JsBarcode.all.min.js"></script>
+</head>
+<body>
+    <form id="passForm" action="wallet.php" method="POST">
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" required />
+
+        <label for="accountNumber">Account Number:</label>
+        <input type="text" name="accountNumber" id="accountNumber" required />
+
+        <label for="isaMember">Is a member :</label>
+        <input type="checkbox" name="isaMember" id="isaMember" value="1" />
+
+        <!-- Hidden input to store the base64 encoded barcode image -->
+        <input type="hidden" name="barcodeImage" id="barcodeImage">
+
+        <!-- Canvas to render the barcode (hidden from view) -->
+        <canvas id="barcodeCanvas" style="display:none;"></canvas>
+
+        <button type="submit">Create Pass</button>
+    </form>
+
+    <script>
+        document.getElementById('passForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Stop form submission until barcode is generated
+
+            var accountNumber = document.getElementById('accountNumber').value;
+
+            if (accountNumber) {
+                // Generate the barcode and place it into the canvas
+                JsBarcode("#barcodeCanvas", accountNumber, {
+                    format: "codabar",
+                    lineColor: "#000",
+                    width: 2,
+                    height: 100,
+                    displayValue: true
+                });
+
+                // Convert the canvas into a base64 image
+                var canvas = document.getElementById('barcodeCanvas');
+                var barcodeImage = canvas.toDataURL("image/png");
+
+                // Set the hidden input value to the base64 image
+                document.getElementById('barcodeImage').value = barcodeImage;
+
+                // Now submit the form
+                document.getElementById('passForm').submit();
+            } else {
+                alert("Account Number is required.");
+            }
+        });
+    </script>
+</body>
+</html>
